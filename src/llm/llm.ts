@@ -12,9 +12,16 @@ export class LLM {
   private client: OpenAI
 
   constructor() {
+    const apiKey = process.env.OPENAI_API_KEY
+    const baseURL = process.env.OPENAI_BASE_URL || undefined
+
+    if (!apiKey) {
+      throw new Error("缺少 OPENAI_API_KEY，请在项目根目录 .env 中配置")
+    }
+
     this.client = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-      baseURL: process.env.OPENAI_BASE_URL || undefined
+      apiKey,
+      baseURL
     })
   }
 

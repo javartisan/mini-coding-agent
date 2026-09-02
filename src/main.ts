@@ -1,6 +1,6 @@
 import dotenv from "dotenv"
-dotenv.config({ override: true })
-
+import path from "node:path"
+import { fileURLToPath } from "node:url"
 import readline from "node:readline"
 
 import { Agent } from "./agent/agent.js"
@@ -11,6 +11,38 @@ import { ReadFileTool } from "./tools/read-file.js"
 import { WriteFileTool } from "./tools/write-file.js"
 import { ShellTool } from "./tools/shell.js"
 import { logger } from "./utils/logger.js"
+
+const projectRoot = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  ".."
+)
+
+const envPath = path.join(projectRoot, ".env")
+const loaded = dotenv.config({
+  path: envPath,
+  override: true,
+  quiet: true
+})
+
+if (loaded.error) {
+  logger.warn(`未能加载 ${envPath}`, loaded.error)
+}
+
+function maskKey(key: string | undefined): string {
+  if (!key) {
+    return "(missing)"
+  }
+
+  return `${key.slice(0, 8)}...${key.slice(-4)}`
+}
+
+logger.info("LLM config", {
+  envFile: envPath,
+  cwd: process.cwd(),
+  model: process.env.OPENAI_MODEL,
+  baseURL: process.env.OPENAI_BASE_URL || "(openai official)",
+  apiKey: maskKey(process.env.OPENAI_API_KEY)
+})
 
 const registry = new ToolRegistry()
 
