@@ -35,7 +35,17 @@ console.log(" Mini Coding Agent")
 console.log(" 输入 exit 退出")
 console.log("================================")
 
+let stopped = false
+
+rl.on("close", () => {
+  stopped = true
+})
+
 function prompt(): void {
+
+  if (stopped) {
+    return
+  }
 
   rl.question("\nYou > ", async (input) => {
 

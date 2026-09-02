@@ -1,5 +1,6 @@
 import { exec } from "node:child_process"
-import type { Tool } from "./tool.js"
+import type { Tool, ToolParameters } from "./tool.js"
+import { logger } from "../utils/logger.js"
 
 interface ShellInput {
   command: string
@@ -9,9 +10,21 @@ export class ShellTool implements Tool<ShellInput> {
 
   name = "shell"
 
-  description = "执行Shell命令"
+  description = "执行一条 Shell 命令，返回 stdout 或错误信息。"
+
+  parameters: ToolParameters = {
+    type: "object",
+    properties: {
+      command: {
+        type: "string",
+        description: "要执行的 shell 命令"
+      }
+    },
+    required: ["command"]
+  }
 
   async execute(input: ShellInput): Promise<string> {
+    const startedAt = logger.toolStart(this.name, input)
 
     return new Promise((resolve) => {
 
@@ -24,13 +37,15 @@ export class ShellTool implements Tool<ShellInput> {
         (error, stdout, stderr) => {
 
           if (error) {
-            resolve(
-              `执行失败\n${stderr || error.message}`
-            )
+            const message = `执行失败\n${stderr || error.message}`
+            logger.toolFail(this.name, startedAt, message)
+            resolve(message)
             return
           }
 
-          resolve(stdout)
+          const output = stdout || "(无输出)"
+          logger.toolOk(this.name, startedAt, output)
+          resolve(output)
         }
       )
 
