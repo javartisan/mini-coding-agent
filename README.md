@@ -28,18 +28,18 @@ mini-coding-agent/
 ├── src/
 │   ├── main.ts                 # CLI 入口
 │   ├── agent/
-│   │   ├── agent.ts            # Agent 核心循环（V1 只有一轮对话）
+│   │   ├── agent.ts            # Agent 核心循环（含 tool calling）
 │   │   └── types.ts            # Message / ToolCall
 │   ├── llm/
 │   │   └── llm.ts              # OpenAI 兼容封装
 │   ├── tools/
-│   │   ├── tool.ts             # Tool 接口
+│   │   ├── tool.ts             # Tool 接口（含 permission）
 │   │   ├── registry.ts         # Tool 注册表
 │   │   ├── read-file.ts
 │   │   ├── write-file.ts
 │   │   └── shell.ts
 │   ├── permission/
-│   │   └── permission.ts       # 权限（V1 只占位，尚未接入循环）
+│   │   └── permission.ts       # 权限校验（write/shell 需确认）
 │   └── utils/
 │       └── logger.ts
 ├── package.json
