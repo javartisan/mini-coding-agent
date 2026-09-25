@@ -1,4 +1,5 @@
 import type { LLM } from "../llm/llm.js"
+import type { PermissionManager } from "../permission/permission.js"
 import type { ToolRegistry } from "../tools/registry.js"
 import { logger, preview } from "../utils/logger.js"
 import type { Message, ToolCall } from "./types.js"
@@ -20,7 +21,8 @@ export class Agent {
 
   constructor(
     private llm: LLM,
-    private tools: ToolRegistry
+    private tools: ToolRegistry,
+    private permission: PermissionManager
   ) {}
 
   async run(userInput: string): Promise<string> {
@@ -87,6 +89,15 @@ export class Agent {
     if (!tool) {
       logger.warn(`未知工具: ${call.name}`, { id: call.id })
       return `未知工具: ${call.name}`
+    }
+
+    const detail = `${call.name} ${JSON.stringify(preview(call.arguments))}`
+    const allowed = await this.permission.check(tool.permission, detail)
+
+    if (!allowed) {
+      const message = `权限被拒绝: ${tool.permission}（工具 ${call.name}）`
+      logger.warn(message, { id: call.id })
+      return message
     }
 
     try {

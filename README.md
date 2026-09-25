@@ -2,15 +2,23 @@
 
 一个刻意模拟真实 Coding Agent 核心结构的教学项目，目标是最终能读懂 [OpenCode](https://github.com/sst/opencode) 一类源码。
 
-当前是 **V1：CLI + Agent + LLM + Tool + Registry + Permission**。
+当前已具备：**CLI + Agent Loop + LLM Tool Calling + Tool Registry + Permission**。
 
-V1 已经把骨架搭好，但还没有真正的 Tool Calling。Agent 只会把用户输入交给 LLM，然后原样返回回答。
+调用链：
 
 ```text
-User → CLI → Agent → LLM → 回答
+User → CLI → Agent → LLM
+                      │
+         tool_calls ──┤
+                      ▼
+              Permission 校验（read 自动放行；write/shell 需确认）
+                      │
+                   允许？
+                 /      \
+               是        否 → 把拒绝结果回填 messages
+               ▼
+          Tool Registry 执行 → 结果回填 → 再问 LLM
 ```
-
-真正的 Agent Loop（LLM 决定调工具 → 执行 → 再问 LLM）留给 V2。
 
 ## 架构
 
@@ -20,18 +28,18 @@ mini-coding-agent/
 ├── src/
 │   ├── main.ts                 # CLI 入口
 │   ├── agent/
-│   │   ├── agent.ts            # Agent 核心循环（V1 只有一轮对话）
+│   │   ├── agent.ts            # Agent 核心循环（含 tool calling）
 │   │   └── types.ts            # Message / ToolCall
 │   ├── llm/
 │   │   └── llm.ts              # OpenAI 兼容封装
 │   ├── tools/
-│   │   ├── tool.ts             # Tool 接口
+│   │   ├── tool.ts             # Tool 接口（含 permission）
 │   │   ├── registry.ts         # Tool 注册表
 │   │   ├── read-file.ts
 │   │   ├── write-file.ts
 │   │   └── shell.ts
 │   ├── permission/
-│   │   └── permission.ts       # 权限（V1 只占位，尚未接入循环）
+│   │   └── permission.ts       # 权限校验（write/shell 需确认）
 │   └── utils/
 │       └── logger.ts
 ├── package.json
@@ -39,28 +47,28 @@ mini-coding-agent/
 └── README.md
 ```
 
-调用链：
+模块关系：
 
 ```text
 User
  │
  ▼
-CLI (main.ts)
- │
- ▼
-Agent
+CLI (main.ts) ── ask() ──► PermissionManager
+ │                              ▲
+ ▼                              │
+Agent ── check(permission) ─────┘
  │
  ├──────────────┐
  ▼              │
-LLM             │   ← V1 还不会走这条路
+LLM             │
  │              │
  │ Tool Call    │
  ▼              │
 Tool Registry ──┘
  │
- ├── read_file
- ├── write_file
- └── shell
+ ├── read_file  (permission: read)
+ ├── write_file (permission: write)
+ └── shell      (permission: shell)
 ```
 
 ## 环境
@@ -117,19 +125,21 @@ You >
 
 输入 `exit` 退出。
 
-## V1 能做什么 / 不能做什么
+## 当前能做什么 / 不能做什么
 
 能做：
 
 - 在终端里和模型多轮对话（`Agent.messages` 会记住历史）
-- 用 TypeScript 把 Tool / Registry / Permission / LLM 拆开
+- LLM 真正调用 `read_file` / `write_file` / `shell`
+- Agent Loop：调工具 → 把结果喂回模型 → 再决定下一步（最多 15 步）
+- 工具执行前做权限校验：`read` 自动放行；`write` / `shell` 会交互确认 `[y/N]`
 - 换任意 OpenAI 兼容模型
 
-不能做（留给 V2）：
+不能做（留给后续版本）：
 
-- 模型不会真正调用 `read_file` / `write_file` / `shell`
-- 没有 Agent Loop：不会「调工具 → 把结果喂回模型 → 再决定下一步」
-- Permission 还没有接到 Tool 执行路径上
+- 更细的 Coding Tools（edit_file / list_directory / search）
+- Session / Context / Token 管理
+- MCP Client
 
 ## 第一阶段学习任务
 
@@ -167,10 +177,10 @@ src/agent/agent.ts
 | 版本 | 目标 |
 | --- | --- |
 | V1 | CLI + Agent + LLM + Tool + Registry |
-| V2 | 真正的 Tool Calling + Agent Loop |
+| V2 | 真正的 Tool Calling + Agent Loop + Permission |
 | V3 | edit_file / list_directory / search 等 Coding Tools |
 | V4 | Session / Context / Token |
 | V5 | MCP Client |
 | V6 | 接近 OpenCode 的完整结构 |
 
-下一步：V2，让 LLM 返回 `tool_calls`，由 Registry 执行，再把结果送回模型，直到给出最终回答。
+下一步：V3，补齐更多 Coding Tools。

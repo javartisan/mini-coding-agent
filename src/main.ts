@@ -10,6 +10,7 @@ import { ToolRegistry } from "./tools/registry.js"
 import { ReadFileTool } from "./tools/read-file.js"
 import { WriteFileTool } from "./tools/write-file.js"
 import { ShellTool } from "./tools/shell.js"
+import { PermissionManager } from "./permission/permission.js"
 import { logger } from "./utils/logger.js"
 
 const projectRoot = path.resolve(
@@ -50,17 +51,25 @@ registry.register(new ReadFileTool())
 registry.register(new WriteFileTool())
 registry.register(new ShellTool())
 
-const llm = new LLM()
-
-const agent = new Agent(
-  llm,
-  registry
-)
-
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 })
+
+function ask(question: string): Promise<string> {
+  return new Promise((resolve) => {
+    rl.question(question, resolve)
+  })
+}
+
+const permission = new PermissionManager(ask)
+const llm = new LLM()
+
+const agent = new Agent(
+  llm,
+  registry,
+  permission
+)
 
 console.log("================================")
 console.log(" Mini Coding Agent")
