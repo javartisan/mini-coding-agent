@@ -12,6 +12,8 @@ export class ShellTool implements Tool<ShellInput> {
 
   description = "执行一条 Shell 命令，返回 stdout 或错误信息。"
 
+  permission = "shell" as const
+
   parameters: ToolParameters = {
     type: "object",
     properties: {

@@ -12,6 +12,8 @@ export class ReadFileTool implements Tool<ReadFileInput> {
 
   description = "读取指定文件的完整内容。需要查看本地文件时使用。"
 
+  permission = "read" as const
+
   parameters: ToolParameters = {
     type: "object",
     properties: {

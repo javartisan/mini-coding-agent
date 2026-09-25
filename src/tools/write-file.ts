@@ -13,6 +13,8 @@ export class WriteFileTool implements Tool<WriteFileInput> {
 
   description = "向指定文件写入内容。文件不存在时会创建。"
 
+  permission = "write" as const
+
   parameters: ToolParameters = {
     type: "object",
     properties: {
