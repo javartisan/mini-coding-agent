@@ -24,12 +24,19 @@
 ```text
 douyin-effect-neixinxi/
 ├── assets/           # 可直接导入像塑的 PNG 贴纸
+├── release/          # 发布用素材压缩包
 ├── preview/          # 浏览器可交互预览（摄像头 / 模拟按钮）
 ├── scripts/          # 重新生成素材
 ├── effect-spec.json  # 玩法与资源清单
 ├── XIANGSU_GUIDE.md  # 像塑逐步复刻指南
+├── PUBLISH.md        # 抖音特效平台提交清单（需本机像塑登录）
 └── README.md
 ```
+
+## 发布到抖音
+
+抖音**只允许**在像塑客户端内登录后点「提交特效」，云端无法代发。  
+完整步骤与可复制文案见 [PUBLISH.md](./PUBLISH.md)；素材包：`release/内心戏泄漏器-像塑素材包.zip`。
 
 ## 立刻预览
 
