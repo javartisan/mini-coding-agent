@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>内心戏泄漏器 · 特效预览</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Noto+Sans+SC:wght@400;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+
+  <header class="top">
+    <div class="brand">
+      <span class="brand-mark">LEAK</span>
+      <h1>内心戏泄漏器</h1>
+    </div>
+    <p class="tagline">张嘴说话 · 脑内弹幕全曝光</p>
+  </header>
+
+  <main class="stage-wrap">
+    <section class="stage" id="stage">
+      <video id="video" playsinline muted autoplay></video>
+      <canvas id="overlay"></canvas>
+
+      <div class="banner" id="banner">⚠ 嘴已失控 · 脑内弹幕正在外泄</div>
+
+      <div class="face-hud" id="faceHud">
+        <div class="thought" id="thought">……</div>
+        <div class="badge" id="badge">表面淡定 · 内心平静</div>
+        <div class="sweat" id="sweat">💧</div>
+      </div>
+
+      <div class="danmaku-layer" id="danmakuLayer"></div>
+
+      <div class="placeholder" id="placeholder">
+        <p class="ph-title">开启摄像头体验</p>
+        <p class="ph-sub">或先用下方按钮模拟张嘴 / 社死模式</p>
+      </div>
+    </section>
+
+    <aside class="panel">
+      <div class="meter">
+        <span>张嘴幅度</span>
+        <div class="bar"><i id="mouthBar"></i></div>
+        <strong id="modeLabel">IDLE · 表面淡定</strong>
+      </div>
+
+      <div class="controls">
+        <button type="button" id="btnCam" class="primary">开启摄像头</button>
+        <button type="button" id="btnMouth">模拟张嘴</button>
+        <button type="button" id="btnSos">社死模式</button>
+        <button type="button" id="btnReset">恢复淡定</button>
+      </div>
+
+      <ol class="howto">
+        <li>对着镜头闭嘴 → 头顶「表面淡定」</li>
+        <li>张嘴说话 → 脑内弹幕泄漏</li>
+        <li>张大嘴 / 猛说 → 触发社死警报</li>
+      </ol>
+
+      <p class="hint">素材与像塑步骤见仓库 <code>douyin-effect-neixinxi/</code></p>
+    </aside>
+  </main>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
