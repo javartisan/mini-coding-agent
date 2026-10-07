@@ -1,0 +1,84 @@
+{
+  "name": "内心戏泄漏器",
+  "nameEn": "Inner Monologue Leak",
+  "version": "1.0.0",
+  "platform": "抖音像塑",
+  "category": "搞笑互动 / 人脸贴纸",
+  "tagline": "张嘴说话，脑内弹幕全曝光",
+  "description": "表面淡定时头顶显示「内心平静」；一开口说话，搞笑脑内弹幕从四面八方飞出；张大嘴触发「社死模式」警报条与满屏弹幕。适合口播翻车、整蛊朋友、职场吐槽短视频。",
+  "triggers": [
+    {
+      "id": "idle",
+      "condition": "检测到人脸且闭嘴",
+      "actions": [
+        "显示 badge_calm（头顶/额头上方）",
+        "显示 sticker_thought（轻微上下浮动）",
+        "隐藏所有弹幕与警报"
+      ]
+    },
+    {
+      "id": "mouth_open",
+      "condition": "表情触发：张嘴（阈值中等）",
+      "actions": [
+        "隐藏 badge_calm / sticker_thought",
+        "显示 badge_leak",
+        "随机显示 3~6 条弹幕贴纸（从屏幕左右飞入）",
+        "太阳穴位置显示 sticker_sweat"
+      ]
+    },
+    {
+      "id": "mouth_wide",
+      "condition": "张嘴幅度大 / 持续张嘴 > 1.2s",
+      "actions": [
+        "显示 badge_sos",
+        "显示 banner_warning（屏幕顶部）",
+        "同时放出全部弹幕（社死模式）",
+        "屏幕轻微红色闪烁（可选滤镜）"
+      ]
+    },
+    {
+      "id": "smile",
+      "condition": "表情触发：微笑（可选增强）",
+      "actions": [
+        "短暂显示 badge_cute",
+        "额外飞出弹幕「我是不是很好看」"
+      ]
+    }
+  ],
+  "assets": {
+    "danmaku": [
+      "dm_01_buxiangshangban.png",
+      "dm_02_wohenhuang.png",
+      "dm_03_jiazhuangting.png",
+      "dm_04_chihelawan.png",
+      "dm_05_haixiu.png",
+      "dm_06_sheqi.png",
+      "dm_07_okok.png",
+      "dm_08_dianliang.png",
+      "dm_09_haokan.png",
+      "dm_10_tuicao.png",
+      "dm_11_cpu.png",
+      "dm_12_muyu.png"
+    ],
+    "badges": [
+      "badge_calm.png",
+      "badge_leak.png",
+      "badge_sos.png",
+      "badge_cute.png"
+    ],
+    "faceStickers": [
+      "sticker_thought.png",
+      "sticker_sweat.png"
+    ],
+    "ui": [
+      "banner_warning.png",
+      "icon_effect.png",
+      "cover_promo.png"
+    ]
+  },
+  "copyHints": {
+    "effectTitle": "内心戏泄漏器",
+    "effectIntro": "张嘴就泄漏脑内弹幕，闭嘴秒变表面淡定。整蛊神器，越说越社死！",
+    "hashtags": ["#内心戏泄漏器", "#搞笑特效", "#整蛊朋友", "#社死现场", "#像塑原创"]
+  }
+}
